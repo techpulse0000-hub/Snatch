@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#141416</color>
+    <string name="app_name">Snatch</string>
+    <string name="channel_name">Downloads</string>
+    <string name="notif_done">Download complete</string>
+    <string name="notif_downloading">Downloading…</string>
+    <string name="notif_failed">Download failed</string>
+    <string name="toast_no_url">No link found in shared content</string>
+    <style name="Theme.Snatch" parent="Theme.Material3.DayNight.NoActionBar"/>
+    <style name="Theme.Transparent" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+</resources>

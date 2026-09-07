@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.ibnluqman.vidgrab.app-mergeDebugResources-43:/values-w600dp-land-v13/values-w600dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\jezzc\\.gradle\\caches\\9.6.1\\transforms\\8e6393d9e4fd33237df8baf058584e61\\transformed\\material-1.12.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "54",
+                        "endOffsets": "105"
+                    }
+                }
+            ]
+        }
+    ]
+}

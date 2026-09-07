@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-mergeDebugResources-44:\\layout\\item_download.xml",
+        "source": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-main-47:\\layout\\item_download.xml"
+    },
+    {
+        "merged": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-mergeDebugResources-44:\\layout\\activity_downloads.xml",
+        "source": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-main-47:\\layout\\activity_downloads.xml"
+    },
+    {
+        "merged": "com.ibnluqman.vidgrab.app-mergeDebugResources-44:/layout/activity_main.xml",
+        "source": "com.ibnluqman.vidgrab.app-main-47:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-mergeDebugResources-44:\\layout\\activity_player.xml",
+        "source": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-main-47:\\layout\\activity_player.xml"
+    },
+    {
+        "merged": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-mergeDebugResources-44:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\jezzc\\.gradle\\daemon\\9.6.1\\com.ibnluqman.vidgrab.app-main-47:\\layout\\activity_main.xml"
+    }
+]

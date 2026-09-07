@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VidGrab settings"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Default download quality"
+        android:paddingBottom="8dp" />
+
+    <RadioGroup
+        android:id="@+id/qualityGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioBest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Best available" />
+
+        <RadioButton
+            android:id="@+id/radio1080"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1080p" />
+
+        <RadioButton
+            android:id="@+id/radio720"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="720p" />
+        <RadioButton
+            android:id="@+id/radio480"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="480p" />
+
+        <RadioButton
+            android:id="@+id/radioAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Audio only (mp3)" />
+    </RadioGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/changeFolderButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Change storage folder" />
+
+    <TextView
+        android:id="@+id/currentFolderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:alpha="0.7"
+        android:text="Currently saving to: Default (Movies/Snatch)" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:text="To download: share any video link to VidGrab from the platform's share menu. It saves quietly in the background." />
+
+</LinearLayout>
