@@ -177,6 +177,34 @@ class DownloadService : Service() {
         record?.let { dao.delete(it) }
     }
 
+    private fun cookieFile(): File = File(filesDir, "instagram_cookies.txt")
+
+    /**
+     * Correctly parses a Netscape-format cookies.txt into a "name=value; name2=value2" header.
+     * Handles the "#HttpOnly_" prefix some exporters use (marks the cookie as HttpOnly — this is
+     * NOT a comment line and must not be skipped, since session cookies are usually HttpOnly).
+     */
+    private fun readCookieHeaderFromFile(file: File): String {
+        return try {
+            file.readLines()
+                .mapNotNull { rawLine ->
+                    var line = rawLine.trim()
+                    if (line.isEmpty()) return@mapNotNull null
+                    if (line.startsWith("#") && !line.startsWith("#HttpOnly_")) return@mapNotNull null
+                    if (line.startsWith("#HttpOnly_")) line = line.removePrefix("#HttpOnly_")
+                    val parts = line.split("\t")
+                    if (parts.size < 7) return@mapNotNull null
+                    val name = parts[5]
+                    val value = parts[6]
+                    "$name=$value"
+                }
+                .joinToString("; ")
+        } catch (e: Exception) {
+            android.util.Log.w("Snatch", "Failed to read cookie file", e)
+            ""
+        }
+    }
+
     private fun fetchHtml(url: String): String {
         return try {
             val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
@@ -185,6 +213,13 @@ class DownloadService : Service() {
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
             )
             connection.setRequestProperty("Accept-Language", "en-US,en;q=0.9")
+            val cf = cookieFile()
+            if (cf.exists()) {
+                val cookieHeader = readCookieHeaderFromFile(cf)
+                if (cookieHeader.isNotEmpty()) {
+                    connection.setRequestProperty("Cookie", cookieHeader)
+                }
+            }
             connection.connectTimeout = 15000
             connection.readTimeout = 15000
             val text = connection.inputStream.bufferedReader().use { it.readText() }
@@ -204,6 +239,13 @@ class DownloadService : Service() {
      * post, or Instagram changed their page structure) so callers can fall back to yt-dlp.
      */
     private fun fetchInstagramCarouselMedia(postUrl: String): List<Pair<String, String>> {
+        val cookies = readCookieHeaderFromFile(cookieFile())
+        val structuredItems = InstagramPostResolver.resolve(postUrl, cookies)
+        if (structuredItems.isNotEmpty()) {
+            android.util.Log.i("Snatch", "Instagram structured resolver found ${structuredItems.size} media item(s)")
+            return structuredItems.map { it.url to it.type }
+        }
+
         val html = fetchHtml(postUrl)
         if (html.isEmpty()) return emptyList()
 
@@ -214,8 +256,10 @@ class DownloadService : Service() {
 
         val displayMatches = displayUrlRegex.findAll(html).toList()
         val videoMatches = videoUrlRegex.findAll(html).toList()
-        if (displayMatches.isEmpty()) return emptyList()
-
+        if (displayMatches.isEmpty()) {
+            android.util.Log.w("Snatch", "Instagram direct fetch got a page back but found no media patterns in it (likely a login wall or changed page structure)")
+            return emptyList()
+        }
         val results = mutableListOf<Pair<String, String>>()
         for (dm in displayMatches) {
             // A video item's video_url is serialized close to its own display_url in the
@@ -246,6 +290,9 @@ class DownloadService : Service() {
             "User-Agent",
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
         )
+        connection.setRequestProperty("Referer", "https://www.instagram.com/")
+        val cookieHeader = readCookieHeaderFromFile(cookieFile())
+        if (cookieHeader.isNotEmpty()) connection.setRequestProperty("Cookie", cookieHeader)
         connection.connectTimeout = 15000
         connection.readTimeout = 30000
         connection.connect()
@@ -307,6 +354,9 @@ class DownloadService : Service() {
             addOption("--dump-json")
             addOption("--skip-download")
             addOption("--socket-timeout", "20")
+            if (cookieFile().exists()) {
+                addOption("--cookies", cookieFile().absolutePath)
+            }
         }
         val response = YoutubeDL.getInstance().execute(request)
         val lines = response.out.lines().filter { it.trim().startsWith("{") }
@@ -356,7 +406,7 @@ class DownloadService : Service() {
                             DownloadRecord(
                                 url = mediaUrl,
                                 forcedQuality = record.forcedQuality,
-                                mediaType = if (type == "PHOTO") "PHOTO" else record.mediaType,
+                                mediaType = type,
                                 isDirectMediaUrl = true,
                                 carouselGroupId = groupId,
                                 carouselIndex = if (groupId != null) index + 1 else null,
@@ -430,7 +480,7 @@ class DownloadService : Service() {
         }
 
         try {
-            ensureInit()
+            if (!record.isDirectMediaUrl) ensureInit()
             val savedPath = runDownloadWithRetry(record, notifId)
             generateLocalThumbnail(record.id, savedPath)
             val result = dao.getById(record.id) ?: record
@@ -623,6 +673,9 @@ class DownloadService : Service() {
             addOption("--socket-timeout", "30")
             addOption("-N", "4")
             addOption("-4")
+            if (cookieFile().exists()) {
+                addOption("--cookies", cookieFile().absolutePath)
+            }
             if (record.playlistIndex != null) {
                 addOption("--playlist-items", record.playlistIndex.toString())
             } else {
@@ -934,3 +987,4 @@ class DownloadService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 }
+
